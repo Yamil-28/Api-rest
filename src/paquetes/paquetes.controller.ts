@@ -1,28 +1,85 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
-@Controller('api/paquetes')
+import { PaquetesService } from './paquetes.service.js';
+
+@Controller('paquetes')
 export class PaquetesController {
+  constructor(
+    private readonly paquetesService: PaquetesService,
+  ) {}
 
-  @Get(':codigo')
-  obtenerDetallePaquete(@Param('codigo') codigo: string) {
-    return {
-      codigo: codigo,
-      rol: "Rol comprador",
-      titulo: "Audífonos inalámbricos",
-      estado: "Ya llegó",
-      detallesEnvio: {
-        fechaLlegada: "16 sep 2026 - 14:32",
-        tiempoGuardado: "10 días",
-        quienPagaLocker: "Comprador",
-        costoActual: "Bs 4",
-        puntoRecojo: "Sucursal Centro",
-        horario: "08:00–19:00"
-      },
-      seguimiento: [
-        { evento: "Disponible para recojo", fecha: "16 sep - 14:32" },
-        { evento: "Asignado al locker M-08", fecha: "16 sep - 14:29" },
-        { evento: "Paquete registrado por el comerciante", fecha: "16 sep - 14:25" }
-      ]
-    };
+  @Post()
+  async crearPaquete(@Body() body: any) {
+    return this.paquetesService.crearPaquete(body);
+  }
+
+  @Get('estadisticas/resumen')
+  async resEstadistica() {
+    return this.paquetesService.resEstadistica();
+  }
+
+  @Get('filtro/estado/:estado')
+  async filtrar(@Param('estado') estado: string) {
+    return this.paquetesService.filtrar(estado);
+  }
+
+  @Get('comerciante/:comercianteId')
+  async paqPorComerciante(
+    @Param('comercianteId', ParseIntPipe) comercianteId: number,
+  ) {
+    return this.paquetesService.paqPorComerciante(comercianteId);
+  }
+
+  @Get('lockers/sucursal/:sucursalId')
+  async lockerSucursal(
+    @Param('sucursalId', ParseIntPipe) sucursalId: number,
+  ) {
+    return this.paquetesService.lockerSucursal(sucursalId);
+  }
+
+  @Get('usuarios/:id/perfil')
+  async perfil(@Param('id', ParseIntPipe) id: number) {
+    return this.paquetesService.perfil(id);
+  }
+
+  @Get(':id/detalle')
+  async obtenerDetalle(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.paquetesService.obtenerDetalle(id);
+  }
+
+  @Get(':id/historial')
+  async obtenerHistorial(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.paquetesService.ObtHistorial(id);
+  }
+
+  @Get(':id/etiqueta')
+  async etiqueta(@Param('id', ParseIntPipe) id: number) {
+    return this.paquetesService.etiqueta(id);
+  }
+
+  @Patch(':id/estado')
+  async actEstado(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('estado') estado: string,
+  ) {
+    return this.paquetesService.actEstado(id, estado);
+  }
+
+  @Delete(':id')
+  async eliminar(@Param('id', ParseIntPipe) id: number) {
+    return this.paquetesService.eliminar(id);
   }
 }
