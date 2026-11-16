@@ -5,8 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { SupabaseService } from './supabase/supabase.service.js';
+
 import { SucursalesController } from './sucursales/sucursales.controller.js';
 import { PagosController } from './pagos/pagos.controller.js';
+import { PaquetesController } from './paquetes/paquetes.controller.js';
 
 import { MisPaquetesController } from './mis-paquetes/mis-paquetes.controller.js';
 import { MisPaquetesService } from './mis-paquetes/mis-paquetes.service.js';
@@ -31,6 +33,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     AppController,
     SucursalesController,
     PagosController,
+    PaquetesController,
     MisPaquetesController,
     AvisosController,
   ],
