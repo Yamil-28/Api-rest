@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: http://localhost:3000/paquetes
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "comerciante_id": 1,
+        "comprador_id": 2,
+        "codigo_interno": "PKG-2026-001",
+        "numero_seguimiento": "REF-98765",
+        "descripcion": "Entrega de documentos de prueba",
+        "fecha_recepcion": "2026-11-16T16:02:24.970Z",
+        "estado": "Pendiente"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  body:
+    type: text
+    content: ""
+order: 1000

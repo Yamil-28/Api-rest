@@ -1,0 +1,6 @@
+$kind: http-request
+url: http://localhost:3000/
+method: GET
+settings: {}
+examples: ./.resources/App Controller get Hello.resources/examples
+order: 1000

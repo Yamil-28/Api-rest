@@ -5,6 +5,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { SupabaseService } from './supabase/supabase.service.js';
 import { SucursalesController } from './sucursales/sucursales.controller.js';
+import { OperacionesController } from './operaciones/operaciones.controller.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -20,7 +21,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       serviceId: 'api-movil',
     }),
   ],
-  controllers: [AppController, SucursalesController],
+  controllers: [AppController, SucursalesController, OperacionesController],
   providers: [AppService, SupabaseService],
 })
 export class AppModule {}

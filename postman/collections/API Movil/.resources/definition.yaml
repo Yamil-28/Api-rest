@@ -1,0 +1,4 @@
+$kind: collection
+description: Documentacion de la API REST
+variables:
+  baseUrl: /

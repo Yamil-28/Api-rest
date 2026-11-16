@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: http://localhost:3000/pagos
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "paquete_id": 1927,
+        "monto": 2176.7721680316663,
+        "fecha": "1987-11-01T16:47:14.240Z",
+        "estado": "string",
+        "id": 4189,
+        "metodo_pago": "string",
+        "referencia": "string"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  body:
+    type: text
+    content: ""
+order: 1000

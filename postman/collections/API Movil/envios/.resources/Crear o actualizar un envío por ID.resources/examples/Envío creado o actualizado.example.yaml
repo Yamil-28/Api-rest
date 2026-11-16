@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: http://localhost:3000/envios
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "paquete_id": 3307,
+        "comprador_id": 2690,
+        "fecha": "1987-04-14T19:54:28.043Z",
+        "id": 3408,
+        "codigo_recojo_id": 3174,
+        "usuario_entrega_id": 5794,
+        "observaciones": "string"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  body:
+    type: text
+    content: ""
+order: 1000

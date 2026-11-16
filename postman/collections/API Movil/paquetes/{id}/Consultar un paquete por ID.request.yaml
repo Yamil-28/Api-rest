@@ -1,0 +1,8 @@
+$kind: http-request
+url: http://localhost:3000/paquetes/:id
+method: GET
+pathVariables:
+  id: "1"
+settings: {}
+examples: ./.resources/Consultar un paquete por ID.resources/examples
+order: 1000
