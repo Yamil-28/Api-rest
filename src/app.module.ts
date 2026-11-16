@@ -1,11 +1,18 @@
 import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { ConfigModule } from '@nestjs/config';
+
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { SupabaseService } from './supabase/supabase.service.js';
 import { SucursalesController } from './sucursales/sucursales.controller.js';
 import { PagosController } from './pagos/pagos.controller.js';
+
+import { MisPaquetesController } from './mis-paquetes/mis-paquetes.controller.js';
+import { MisPaquetesService } from './mis-paquetes/mis-paquetes.service.js';
+import { AvisosController } from './avisos/avisos.controller.js';
+import { AvisosService } from './avisos/avisos.service.js';
+
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
 @Module({
@@ -20,7 +27,18 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       serviceId: 'api-movil',
     }),
   ],
-  controllers: [AppController, SucursalesController, PagosController],
-  providers: [AppService, SupabaseService],
+  controllers: [
+    AppController,
+    SucursalesController,
+    PagosController,
+    MisPaquetesController,
+    AvisosController,
+  ],
+  providers: [
+    AppService,
+    SupabaseService,
+    MisPaquetesService,
+    AvisosService,
+  ],
 })
 export class AppModule {}
