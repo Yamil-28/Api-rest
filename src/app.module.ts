@@ -6,6 +6,11 @@ import { AppService } from './app.service.js';
 import { SupabaseService } from './supabase/supabase.service.js';
 import { SucursalesController } from './sucursales/sucursales.controller.js';
 
+import { MisPaquetesController } from './mis-paquetes/mis-paquetes.controller.js';
+import { MisPaquetesService } from './mis-paquetes/mis-paquetes.service.js';
+import { AvisosController } from './avisos/avisos.controller.js';
+import { AvisosService } from './avisos/avisos.service.js';
+
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
 @Module({
@@ -20,7 +25,19 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       serviceId: 'api-movil',
     }),
   ],
-  controllers: [AppController, SucursalesController],
-  providers: [AppService, SupabaseService],
+  
+  controllers: [
+    AppController,
+    SucursalesController,
+    MisPaquetesController,
+    AvisosController,
+  ],
+  providers: [
+    AppService,
+    SupabaseService,
+    MisPaquetesService,
+    AvisosService,
+  ],
+
 })
 export class AppModule {}
