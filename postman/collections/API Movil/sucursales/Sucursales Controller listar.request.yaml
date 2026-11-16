@@ -1,0 +1,6 @@
+$kind: http-request
+url: http://localhost:3000/sucursales
+method: GET
+settings: {}
+examples: ./.resources/Sucursales Controller listar.resources/examples
+order: 1000

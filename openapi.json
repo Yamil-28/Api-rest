@@ -1,0 +1,154 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["App"]
+      }
+    },
+    "/sucursales": {
+      "get": {
+        "operationId": "SucursalesController_listar",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Sucursales"]
+      }
+    },
+    "/paquetes": {
+      "post": {
+        "description": "Si se envía un ID existente, actualiza ese paquete; si no, crea un paquete.",
+        "operationId": "OperacionesController_guardarPaquete",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "comerciante_id": { "type": "integer" },
+                  "comprador_id": { "type": "integer" },
+                  "codigo_interno": { "type": "string" },
+                  "numero_seguimiento": { "type": "string", "nullable": true },
+                  "descripcion": { "type": "string", "nullable": true },
+                  "fecha_recepcion": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "estado": { "type": "string" }
+                },
+                "required": [
+                  "comerciante_id",
+                  "comprador_id",
+                  "codigo_interno",
+                  "fecha_recepcion",
+                  "estado"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Paquete creado o actualizado" }
+        },
+        "summary": "Crear o actualizar un paquete por ID",
+        "tags": ["Operaciones", "Paquetes"]
+      }
+    },
+    "/pagos": {
+      "post": {
+        "description": "Si se envía un ID existente, actualiza ese pago; si no, crea un pago.",
+        "operationId": "OperacionesController_guardarPago",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "paquete_id": { "type": "integer" },
+                  "monto": { "type": "number" },
+                  "fecha": { "type": "string", "format": "date-time" },
+                  "metodo_pago": { "type": "string", "nullable": true },
+                  "estado": { "type": "string" },
+                  "referencia": { "type": "string", "nullable": true }
+                },
+                "required": ["paquete_id", "monto", "fecha", "estado"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Pago creado o actualizado" } },
+        "summary": "Crear o actualizar un pago por ID",
+        "tags": ["Operaciones", "Pagos"]
+      }
+    },
+    "/envios": {
+      "post": {
+        "description": "Guarda el envío en la tabla entregas. Si se envía un ID existente, actualiza ese envío.",
+        "operationId": "OperacionesController_guardarEnvio",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "paquete_id": { "type": "integer" },
+                  "comprador_id": { "type": "integer" },
+                  "codigo_recojo_id": { "type": "integer", "nullable": true },
+                  "usuario_entrega_id": { "type": "integer", "nullable": true },
+                  "fecha": { "type": "string", "format": "date-time" },
+                  "observaciones": { "type": "string", "nullable": true }
+                },
+                "required": ["paquete_id", "comprador_id", "fecha"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Envío creado o actualizado" } },
+        "summary": "Crear o actualizar un envío por ID",
+        "tags": ["Operaciones", "Envios"]
+      }
+    },
+    "/paquetes/{id}": {
+      "get": {
+        "operationId": "OperacionesController_obtenerPaquete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "example": 1, "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Paquete encontrado" },
+          "404": { "description": "Paquete no encontrado" }
+        },
+        "summary": "Consultar un paquete por ID",
+        "tags": ["Operaciones", "Paquetes"]
+      }
+    }
+  },
+  "info": {
+    "title": "API Movil",
+    "description": "Documentacion de la API REST",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": { "schemas": {} }
+}

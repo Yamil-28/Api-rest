@@ -1,0 +1,21 @@
+$kind: http-request
+description: Si se envía un ID existente, actualiza ese paquete; si no, crea un paquete.
+url: "{{baseUrl}}/paquetes"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "comerciante_id": 1,
+      "comprador_id": 1,
+      "codigo_interno": "PKG-2026-001",
+      "fecha_recepcion": "2026-11-16T16:02:24.970Z",
+      "estado": "RECIBIDO",
+      "numero_seguimiento": "REF-98765",
+      "descripcion": "Entrega de documentos de prueba"
+    }
+settings: {}
+examples: ./.resources/Crear o actualizar un paquete por ID.resources/examples
+order: 2000

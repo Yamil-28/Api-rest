@@ -9,6 +9,7 @@ import { SupabaseService } from './supabase/supabase.service.js';
 import { SucursalesController } from './sucursales/sucursales.controller.js';
 import { PagosController } from './pagos/pagos.controller.js';
 import { PaquetesController } from './paquetes/paquetes.controller.js';
+import { OperacionesController } from './operaciones/operaciones.controller.js';
 
 import { MisPaquetesController } from './mis-paquetes/mis-paquetes.controller.js';
 import { MisPaquetesService } from './mis-paquetes/mis-paquetes.service.js';
@@ -36,6 +37,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     PaquetesController,
     MisPaquetesController,
     AvisosController,
+    OperacionesController,
   ],
   providers: [
     AppService,

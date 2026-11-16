@@ -1,0 +1,21 @@
+$kind: http-request
+description: Si se envía un ID existente, actualiza ese pago; si no, crea un pago.
+url: http://localhost:3000/pagos
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "paquete_id": 1927,
+      "monto": 2176.7721680316663,
+      "fecha": "1987-11-01T16:47:14.240Z",
+      "estado": "string",
+      "id": 4189,
+      "metodo_pago": "string",
+      "referencia": "string"
+    }
+settings: {}
+examples: ./.resources/Crear o actualizar un pago por ID.resources/examples
+order: 1000
