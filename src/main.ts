@@ -9,16 +9,21 @@ async function bootstrap() {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('API Movil')
-    .setDescription('Documentacion de la API REST')
+    .setDescription('Documentación de la API REST')
     .setVersion('1.0')
     .build();
+
   const swaggerDocument = () =>
     SwaggerModule.createDocument(app, swaggerConfig);
+
   SwaggerModule.setup('docs', app, swaggerDocument, {
     jsonDocumentUrl: 'swagger.json',
   });
-  SwaggerModule.setup('docs', app, swaggerDocument);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(
+    Number(process.env.PORT ?? 3000),
+    '0.0.0.0',
+  );
 }
+
 await bootstrap();
