@@ -1,7 +1,7 @@
 export type Rol = 'comprador' | 'comerciante';
-export type Screen = 'login' | 'inicio' | 'paquetes' | 'detalle' | 'observado' | 'pagos' | 'avisos' | 'codigo' | 'historial' | 'perfil';
+export type Screen = 'login' | 'inicio' | 'paquetes' | 'detalle' | 'observado' | 'pagos' | 'avisos' | 'codigo' | 'historial' | 'perfil' | 'validar' | 'revisar-pagos';
 export type EstadoPaquete = 'RECIBIDO' | 'ALMACENADO' | 'PENDIENTE_RETIRO' | 'ENTREGADO' | 'OBSERVADO' | 'CANCELADO';
-export type EstadoPago = 'PENDIENTE' | 'PAGADO';
+export type EstadoPago = 'PENDIENTE' | 'PAGADO' | 'CANCELADO';
 export interface Paquete {
   id: number;
   comerciante_id: number;

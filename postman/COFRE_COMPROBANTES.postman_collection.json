@@ -1,0 +1,163 @@
+{
+  "info": {
+    "name": "Cofre Express - Comprobantes bancarios (protegido)",
+    "description": "El comprador sube un comprobante. Solo un revisor autorizado consulta el adjunto y aprueba tras comprobar el movimiento en el banco.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01 - Adjuntar imagen o PDF (comprador)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/{{cargoId}}/comprobante",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "comprobante",
+              "type": "file",
+              "src": [],
+              "description": "Seleccionar JPG, PNG, WebP o PDF maximo 5 MB"
+            },
+            {
+              "key": "referencia",
+              "value": "BANCO-12345",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Listar reportes pendientes (revisor)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/manual/pendientes"
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Abrir comprobante (revisor)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/manual/{{reporteId}}/comprobante"
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Aprobar tras verificar banco (revisor)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/manual/{{reporteId}}/aprobar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"montoVerificadoCentavos\": 400\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Rechazar (revisor)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/manual/{{reporteId}}/rechazar",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"No se encontro la transferencia en el banco\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06 - Estado del cargo",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/cofre/pagos/{{cargoId}}/estado"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api-rest-6an3.onrender.com"
+    },
+    {
+      "key": "cargoId",
+      "value": "1"
+    },
+    {
+      "key": "reporteId",
+      "value": "REEMPLAZAR_UUID"
+    },
+    {
+      "key": "accessToken",
+      "value": "TOKEN_SUPABASE_AUTH"
+    }
+  ]
+}

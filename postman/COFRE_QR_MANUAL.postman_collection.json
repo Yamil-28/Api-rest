@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "COFRE - QR bancario manual (revisión segura)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "No confirma dinero automáticamente. Configura token Bearer a nivel colección y verifica el banco antes de aprobar."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01 - Cuenta autenticada",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "me"
+          ]
+        }
+      }
+    },
+    {
+      "name": "02 - Pagos de mi cuenta",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos"
+          ]
+        }
+      }
+    },
+    {
+      "name": "03 - Reportar referencia bancaria",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos/{{cargoId}}/manual",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos",
+            "{{cargoId}}",
+            "manual"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"referencia\": \"CAMBIA-REF-REAL\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "04 - Reportes pendientes SOLO REVISOR",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos/manual/pendientes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos",
+            "manual",
+            "pendientes"
+          ]
+        }
+      }
+    },
+    {
+      "name": "05 - Aprobar SOLO TRAS VERIFICAR EN BANCO",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos/manual/{{reporteId}}/aprobar",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos",
+            "manual",
+            "{{reporteId}}",
+            "aprobar"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"montoVerificadoCentavos\": 400\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "06 - Rechazar SOLO REVISOR",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos/manual/{{reporteId}}/rechazar",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos",
+            "manual",
+            "{{reporteId}}",
+            "rechazar"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"motivo\": \"No se encontró la transferencia en el banco\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "07 - Emitir QR de recojo",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/recojo/{{paqueteId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "recojo",
+            "{{paqueteId}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "08 - Revalidar cargos",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/cofre/pagos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "cofre",
+            "pagos"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api-rest-6an3.onrender.com"
+    },
+    {
+      "key": "token",
+      "value": "TOKEN_DE_USUARIO_SUPABASE_AUTH"
+    },
+    {
+      "key": "cargoId",
+      "value": "1"
+    },
+    {
+      "key": "reporteId",
+      "value": "UUID_DEL_REPORTE"
+    },
+    {
+      "key": "paqueteId",
+      "value": "1"
+    }
+  ]
+}

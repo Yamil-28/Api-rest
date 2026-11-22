@@ -6,10 +6,27 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "scheme": "cofreexpress",
-    "platforms": ["android", "ios", "web"],
-    "ios": { "supportsTablet": true },
-    "android": { "package": "bo.edu.cofreexpress.mobile", "edgeToEdgeEnabled": true },
-    "web": { "bundler": "metro", "name": "Cofre Express" },
-    "experiments": { "tsconfigPaths": true }
+    "platforms": [
+      "android",
+      "ios",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "bo.edu.cofreexpress.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "name": "Cofre Express"
+    },
+    "experiments": {
+      "tsconfigPaths": true
+    },
+    "plugins": [
+      "expo-status-bar",
+      "expo-font"
+    ]
   }
 }

@@ -11,7 +11,16 @@ const tabs: {screen:Screen;title:string;icon:React.ComponentProps<typeof Feather
  {screen:'perfil',title:'Perfil',icon:'user'},
 ];
 export function BottomTabs(){
- const {screen,navigate}=useApp();
+ const {screen,navigate,revisor,staff,hasBuyerRole,hasMerchantRole}=useApp();
+ if(!hasBuyerRole && !hasMerchantRole && (revisor||staff)) {
+  const teamTabs: {screen:Screen; title:string;icon:React.ComponentProps<typeof Feather>['name']}[] = [];
+  if(revisor) teamTabs.push({screen:'revisar-pagos',title:'Revisar pagos',icon:'file-text'});
+  if(staff) teamTabs.push({screen:'validar',title:'Validar retiro',icon:'check-circle'});
+  teamTabs.push({screen:'perfil',title:'Perfil',icon:'user'});
+  return <View style={styles.wrap}>{teamTabs.map(tab=><Pressable key={tab.screen} onPress={()=>navigate(tab.screen)} style={[styles.tab,screen===tab.screen&&styles.active]}>
+    <Feather name={tab.icon} size={18} color={screen===tab.screen?colors.deepAmber:colors.muted}/><Txt size={10}>{tab.title}</Txt>
+  </Pressable>)}</View>;
+ }
  const active = ['detalle','observado','codigo','historial'].includes(screen) ? 'paquetes' : screen;
  return <View style={styles.wrap}>{tabs.map(tab=><Pressable accessibilityLabel={`Ir a ${tab.title}`} key={tab.screen} onPress={()=>navigate(tab.screen)} style={[styles.tab,active===tab.screen&&styles.active]}>
   <Feather name={tab.icon} size={18} color={active===tab.screen?colors.deepAmber:colors.muted}/>

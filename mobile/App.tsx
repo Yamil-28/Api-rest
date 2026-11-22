@@ -14,6 +14,8 @@ import { PagosScreen } from './src/modules/PG/PagosScreen';
 import { AvisosScreen } from './src/modules/LO/AvisosScreen';
 import { CodigoRecojoScreen } from './src/modules/QR/CodigoRecojoScreen';
 import { HistorialScreen } from './src/modules/FG/HistorialScreen';
+import { ValidarRecojoScreen } from './src/modules/OP/ValidarRecojoScreen';
+import { RevisarPagosScreen } from './src/modules/RV/RevisarPagosScreen';
 import { PerfilScreen } from './src/modules/PR/PerfilScreen';
 import type { Screen } from './src/domain/models';
 
@@ -27,6 +29,8 @@ const pages: Record<Exclude<Screen, 'login'>, React.ComponentType> = {
   codigo: CodigoRecojoScreen,
   historial: HistorialScreen,
   perfil: PerfilScreen,
+  validar: ValidarRecojoScreen,
+  'revisar-pagos': RevisarPagosScreen,
 };
 function Navigator() {
   const { isLoggedIn, screen } = useApp();
