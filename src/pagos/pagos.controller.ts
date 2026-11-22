@@ -31,24 +31,36 @@ export class PagosController {
   async listar(@Query('estado') estado?: string) {
     let consulta = this.supabase.cliente
       .from('pagos')
-      .select(
-        'id, paquete_id, monto, fecha, metodo_pago, estado, referencia',
-      )
+      .select(`
+        id,
+        paquete_id,
+        monto,
+        fecha,
+        metodo_pago,
+        estado,
+        referencia,
+        paquetes (
+          codigo_interno,
+          descripcion,
+          fecha_recepcion
+        )
+      `)
       .order('id', { ascending: false });
-
+      
     if (estado) {
       consulta = consulta.eq('estado', estado);
     }
-
+  
     const { data, error } = await consulta;
-
+  
     if (error) {
       this.logger.error(error.message);
+    
       throw new InternalServerErrorException(
         'No se pudieron consultar los pagos',
       );
     }
-
+  
     return data;
   }
 
