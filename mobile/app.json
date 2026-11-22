@@ -1,0 +1,15 @@
+{
+  "expo": {
+    "name": "Cofre Express",
+    "slug": "cofre-express",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "cofreexpress",
+    "platforms": ["android", "ios", "web"],
+    "ios": { "supportsTablet": true },
+    "android": { "package": "bo.edu.cofreexpress.mobile", "edgeToEdgeEnabled": true },
+    "web": { "bundler": "metro", "name": "Cofre Express" },
+    "experiments": { "tsconfigPaths": true }
+  }
+}
