@@ -1,7 +1,7 @@
 import { BaseRepository } from './repository';
 import { settings } from '../config/env';
-import type { AvisosResponse, PaquetesResponse, Rol } from '../domain/models';
-import { mapPaquetes, mapAvisos } from './mapper';
+import type { AvisosResponse, PaquetesResponse, Rol, Pago, } from '../domain/models';
+import { mapPaquetes, mapAvisos, mapPagos } from './mapper';
 
 export class ApiHttpError extends Error {
   constructor(public status: number, message: string) { super(message); this.name = 'ApiHttpError'; }
@@ -39,5 +39,8 @@ export class HttpRepository extends BaseRepository {
   }
   async listarAvisos(rol: Rol, perfilId: number): Promise<AvisosResponse> {
     return mapAvisos(await this.request(`/avisos/${rol}/${perfilId}`));
+  }
+  async listarPagos(_perfilId: number): Promise<Pago[]> {
+  return mapPagos(await this.request('/pagos'));
   }
 }

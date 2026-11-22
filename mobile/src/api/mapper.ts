@@ -1,4 +1,4 @@
-import type { Aviso, Paquete, PaquetesResponse, AvisosResponse } from '../domain/models';
+import type { Aviso, Paquete, PaquetesResponse, AvisosResponse, Pago, } from '../domain/models';
 /** Adaptador anti-corruption: traduce JSON de NestJS sin llevar datos mock a produccion. */
 export function mapPaquetes(payload: unknown): PaquetesResponse {
   const data = (payload && typeof payload === 'object') ? payload as Record<string,unknown> : {};
@@ -28,4 +28,82 @@ export function mapAvisos(payload: unknown): AvisosResponse {
     };
   });
   return {total:Number(data.total??avisos.length), avisos};
+}
+export function mapPagos(payload: unknown): Pago[] {
+  if (!Array.isArray(payload)) {
+    throw new Error('La API de pagos no devolvió una lista.');
+  }
+
+  return payload.map((valor): Pago => {
+    if (!valor || typeof valor !== 'object') {
+      throw new Error('La API devolvió un pago inválido.');
+    }
+
+    const pago = valor as Record<string, unknown>;
+    const id = Number(pago.id);
+    const paqueteId = Number(pago.paquete_id);
+
+    const monto =
+      typeof pago.monto === 'number'
+        ? pago.monto
+        : typeof pago.monto === 'string' &&
+            pago.monto.trim() !== ''
+          ? Number(pago.monto)
+          : NaN;
+
+    if (
+      !Number.isSafeInteger(id) ||
+      !Number.isSafeInteger(paqueteId) ||
+      !Number.isFinite(monto)
+    ) {
+      throw new Error(
+        'Un pago contiene identificadores o monto inválidos.',
+      );
+    }
+
+    if (
+      pago.estado !== 'PENDIENTE' &&
+      pago.estado !== 'COMPLETADO'
+    ) {
+      throw new Error(
+        `Estado de pago no reconocido: ${String(pago.estado)}`,
+      );
+    }
+
+    const paquete =
+      pago.paquetes &&
+      typeof pago.paquetes === 'object' &&
+      !Array.isArray(pago.paquetes)
+        ? (pago.paquetes as Record<string, unknown>)
+        : undefined;
+
+    const codigo =
+      typeof paquete?.codigo_interno === 'string'
+        ? paquete.codigo_interno.trim()
+        : '';
+
+    const descripcion =
+      typeof paquete?.descripcion === 'string'
+        ? paquete.descripcion.trim()
+        : '';
+
+    const titulo = [
+      codigo || `Paquete ${paqueteId}`,
+      descripcion,
+    ]
+      .filter(Boolean)
+      .join(' · ');
+
+    return {
+      id,
+      paqueteId,
+      titulo,
+      monto,
+      estado:
+        pago.estado === 'COMPLETADO'
+          ? 'PAGADO'
+          : 'PENDIENTE',
+      fecha: String(pago.fecha ?? ''),
+    };
+  });
 }

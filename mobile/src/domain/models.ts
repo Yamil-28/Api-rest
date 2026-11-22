@@ -30,7 +30,7 @@ export interface Pago {
   titulo: string;
   monto: number;
   estado: EstadoPago;
-  pagador: Rol;
+  pagador?: Rol;
   fecha: string;
 }
 export interface Entrega {

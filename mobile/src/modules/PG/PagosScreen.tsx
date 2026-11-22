@@ -1,23 +1,204 @@
 import React, { useMemo, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+
 import { useApp } from '../../context/AppContext';
 import { repository } from '../../api';
 import { useRemote } from '../../hooks/useRemote';
-import { Card, Txt, Header, ScreenBody, Chip, PillInfo, DemoFlag, ResourceGate, Empty, IconTile, Status } from '../../components/Primitives';
+import {
+  Card,
+  Txt,
+  Header,
+  ScreenBody,
+  Chip,
+  PillInfo,
+  DemoFlag,
+  ResourceGate,
+  Empty,
+  IconTile,
+  Status,
+} from '../../components/Primitives';
 import { colors } from '../../config/theme';
+import { settings } from '../../config/env';
 import type { EstadoPago } from '../../domain/models';
-export function PagosScreen(){const {perfilId}=useApp();
- const [estado,setEstado]=useState<'TODOS'|EstadoPago>('TODOS');
- const {data,loading,error,reload}=useRemote(()=>repository.listarPagos(perfilId),[perfilId]);
- const filtered=useMemo(()=> (data||[]).filter(x=>estado==='TODOS'||x.estado===estado),[data,estado]);
- const total=(data||[]).reduce((s,p)=>s+p.monto,0), pending=(data||[]).filter(p=>p.estado==='PENDIENTE');
- return <><Header title="Pagos del locker" subtitle="Consulta quién debe pagar por cada paquete"/><ScreenBody><DemoFlag/>
-  <ResourceGate loading={loading} error={error} onRetry={reload}>
-   <View style={{flexDirection:'row',gap:8}}><PillInfo label="Total asociado" value={`Bs ${total}`}/><PillInfo label="Pendientes" value={`${pending.length}`}/><PillInfo label="Completados" value={`${(data||[]).length-pending.length}`}/></View>
-   <View style={styles.filters}>{[{id:'TODOS',t:'Todos'},{id:'PENDIENTE',t:'Pagos pendientes'},{id:'PAGADO',t:'Pagados'}].map(f=><Chip key={f.id} label={f.t} active={estado===f.id} onPress={()=>setEstado(f.id as 'TODOS'|EstadoPago)}/>)}</View>
-   {filtered.length===0?<Empty title="No hay pagos" description="No existen registros para el filtro elegido."/>:filtered.map(p=><Card key={p.id}><View style={styles.row}><IconTile name="credit-card"/><View style={{flex:1}}><Txt size={12} bold numberOfLines={2}>{p.titulo}</Txt><Txt size={10} muted style={{marginTop:4}}>Debe pagar: {p.pagador==='comerciante'?'Comerciante':'Comprador'}</Txt></View><Txt size={16} bold>Bs {p.monto}</Txt></View><View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginTop:12}}><Status text={p.estado==='PAGADO'?'Sin deuda':'Deuda por comprobar'} tone={p.estado==='PAGADO'?'green':'amber'}/><Feather name="check-circle" size={15} color={p.estado==='PAGADO'?colors.green:colors.muted}/></View></Card>)}
-  </ResourceGate>
- </ScreenBody></>;
+
+type FiltroPago = 'TODOS' | EstadoPago;
+
+const filtros: { id: FiltroPago; titulo: string }[] = [
+  { id: 'TODOS', titulo: 'Todos' },
+  { id: 'PENDIENTE', titulo: 'Pagos pendientes' },
+  { id: 'PAGADO', titulo: 'Pagados' },
+];
+
+export function PagosScreen() {
+  const { perfilId } = useApp();
+
+  const [estado, setEstado] = useState<FiltroPago>('TODOS');
+
+  const { data, loading, error, reload } = useRemote(
+    () => repository.listarPagos(perfilId),
+    [perfilId],
+  );
+
+  const pagosReales =
+    settings.pagosSource === 'api' ||
+    settings.dataSource === 'api';
+
+  const pagosFiltrados = useMemo(
+    () =>
+      (data ?? []).filter(
+        pago => estado === 'TODOS' || pago.estado === estado,
+      ),
+    [data, estado],
+  );
+
+  const pendientes = (data ?? []).filter(
+    pago => pago.estado === 'PENDIENTE',
+  );
+
+  const totalPendiente = pendientes.reduce(
+    (suma, pago) => suma + pago.monto,
+    0,
+  );
+
+  const completados = (data ?? []).filter(
+    pago => pago.estado === 'PAGADO',
+  ).length;
+
+  return (
+    <>
+      <Header
+        title="Pagos del locker"
+        subtitle={
+          pagosReales
+            ? 'Consulta general de pagos · Sin filtro por usuario'
+            : 'Consulta quién debe pagar por cada paquete'
+        }
+      />
+
+      <ScreenBody>
+        {!pagosReales && <DemoFlag />}
+
+        <ResourceGate
+          loading={loading}
+          error={error}
+          onRetry={reload}
+        >
+          <View style={styles.resumen}>
+            <PillInfo
+              label="Total pendiente"
+              value={`Bs ${totalPendiente.toFixed(2)}`}
+            />
+
+            <PillInfo
+              label="Pendientes"
+              value={`${pendientes.length}`}
+            />
+
+            <PillInfo
+              label="Completados"
+              value={`${completados}`}
+            />
+          </View>
+
+          <View style={styles.filters}>
+            {filtros.map(filtro => (
+              <Chip
+                key={filtro.id}
+                label={filtro.titulo}
+                active={estado === filtro.id}
+                onPress={() => setEstado(filtro.id)}
+              />
+            ))}
+          </View>
+
+          {pagosFiltrados.length === 0 ? (
+            <Empty
+              title="No hay pagos"
+              description="No existen registros para el filtro elegido."
+            />
+          ) : (
+            pagosFiltrados.map(pago => {
+              const pagado = pago.estado === 'PAGADO';
+
+              const responsable =
+                pago.pagador === 'comerciante'
+                  ? 'Debe pagar: Comerciante'
+                  : pago.pagador === 'comprador'
+                    ? 'Debe pagar: Comprador'
+                    : 'Responsable por definir';
+
+              return (
+                <Card key={pago.id}>
+                  <View style={styles.row}>
+                    <IconTile name="credit-card" />
+
+                    <View style={styles.descripcion}>
+                      <Txt size={12} bold numberOfLines={2}>
+                        {pago.titulo}
+                      </Txt>
+
+                      <Txt
+                        size={10}
+                        muted
+                        style={styles.responsable}
+                      >
+                        {responsable}
+                      </Txt>
+                    </View>
+
+                    <Txt size={16} bold>
+                      Bs {pago.monto.toFixed(2)}
+                    </Txt>
+                  </View>
+
+                  <View style={styles.estado}>
+                    <Status
+                      text={pagado ? 'Sin deuda' : 'Pago pendiente'}
+                      tone={pagado ? 'green' : 'amber'}
+                    />
+
+                    <Feather
+                      name={pagado ? 'check-circle' : 'clock'}
+                      size={15}
+                      color={pagado ? colors.green : colors.muted}
+                    />
+                  </View>
+                </Card>
+              );
+            })
+          )}
+        </ResourceGate>
+      </ScreenBody>
+    </>
+  );
 }
-const styles=StyleSheet.create({row:{flexDirection:'row',alignItems:'center',gap:8},filters:{flexDirection:'row',gap:7,flexWrap:'wrap'}});
+
+const styles = StyleSheet.create({
+  resumen: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  descripcion: {
+    flex: 1,
+  },
+  responsable: {
+    marginTop: 4,
+  },
+  filters: {
+    flexDirection: 'row',
+    gap: 7,
+    flexWrap: 'wrap',
+  },
+  estado: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+});
