@@ -4,9 +4,18 @@
     "strict": true,
     "noEmit": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "jsx": "react-jsx"
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
