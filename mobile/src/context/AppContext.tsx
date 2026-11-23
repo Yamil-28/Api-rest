@@ -14,9 +14,31 @@ export interface AppState {
   signInDemo:()=>void; signInReal:(email:string,password:string)=>Promise<void>; logout:()=>void;
 }
 const Context=createContext<AppState|undefined>(undefined);
-async function fetchIdentity(token:string):Promise<Identity> {
-  const resp=await fetch(`${settings.apiBaseUrl}/cofre/me`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/json'}});
-  if(!resp.ok) throw new Error(resp.status===403?'Tu cuenta Auth no está vinculada a un perfil autorizado. Contacta al administrador.':`No fue posible verificar la cuenta (HTTP ${resp.status}).`);
+async function fetchIdentity(token: string): Promise<Identity> {
+  if (!settings.apiBaseUrl) {
+    throw new Error('Falta EXPO_PUBLIC_API_URL en la compilacion del APK.');
+  }
+  const headers = { Authorization: `Bearer ${token}`, Accept: 'application/json' };
+  const getMe = () => fetch(`${settings.apiBaseUrl}/cofre/me`, { headers });
+  let resp = await getMe();
+  if (resp.status === 403) {
+    // Solo aprovisionamos al usuario nuevo cuando el backend confirma que NO esta vinculado.
+    const body = await resp.clone().json().catch(() => ({})) as {message?: string};
+    if (body.message === 'Cuenta no vinculada al perfil de Cofre Express') {
+      const created = await fetch(`${settings.apiBaseUrl}/cofre/registro`, {
+        method: 'POST', headers,
+      });
+      if (!created.ok) {
+        const detail = await created.json().catch(() => ({})) as {message?: string};
+        throw new Error(detail.message || `Registro de perfil fallido (HTTP ${created.status}).`);
+      }
+      resp = await getMe();
+    }
+  }
+  if (!resp.ok) {
+    const error = await resp.json().catch(() => ({})) as {message?: string};
+    throw new Error(error.message || `No fue posible verificar la cuenta (HTTP ${resp.status}).`);
+  }
   return await resp.json() as Identity;
 }
 export function AppProvider({children}:{children:React.ReactNode}) {
