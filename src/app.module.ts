@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { ConfigModule } from '@nestjs/config';
@@ -19,7 +20,10 @@ import { MisPaquetesService } from './mis-paquetes/mis-paquetes.service.js';
 import { AvisosController } from './avisos/avisos.controller.js';
 import { AvisosService } from './avisos/avisos.service.js';
 
-export const { ObserveModule, ObserveInstrument } = createObserveModule();
+import { CofreModule } from './cofre/cofre.module.js';
+
+export const { ObserveModule, ObserveInstrument } =
+  createObserveModule();
 
 @Module({
   imports: [
@@ -32,7 +36,10 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: process.env.OBSERVE_APP_SECRET ?? 'YOUR_APP_SECRET',
       serviceId: 'api-movil',
     }),
+
+    CofreModule,
   ],
+
   controllers: [
     AppController,
     SucursalesController,
@@ -43,6 +50,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     MisPaquetesController,
     AvisosController,
   ],
+
   providers: [
     AppService,
     SupabaseService,

@@ -23,10 +23,6 @@
     },
     "experiments": {
       "tsconfigPaths": true
-    },
-    "plugins": [
-      "expo-status-bar",
-      "expo-font"
-    ]
+    }
   }
 }

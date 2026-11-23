@@ -43,8 +43,8 @@ export class CofreService {
     const {data:{user},error:authError} = await this.publicAuth.auth.getUser(jwt);
     if (authError || !user || !user.email) throw new UnauthorizedException('Token invalido o vencido');
     // El enlace a usuarios es EXPLICITO: no se asignan roles por correo ni por IDs enviados desde la app.
-    const {data:usuario,error:userError} = await this.admin.from('usuarios').select('id,nombre').eq('auth_user_id',user.id).maybeSingle();
-    if (userError) throw new InternalServerErrorException('No se pudo comprobar la identidad');
+    const {data:usuario,error:userError} = await this.admin.from('usuarios').select('id').eq('auth_user_id',user.id).maybeSingle();
+    if (userError) { console.error('[cofre] Error al buscar auth_user_id en public.usuarios:', userError.code || 'sin_codigo'); throw new InternalServerErrorException('No se pudo comprobar la identidad'); }
     if (!usuario) throw new ForbiddenException('Cuenta no vinculada al perfil de Cofre Express');
     const [{data:comprador,error:bc},{data:comerciante,error:cc},{data:staff,error:sc},{data:revisor,error:rc}] = await Promise.all([
       this.admin.from('compradores').select('id').eq('usuario_id',usuario.id).maybeSingle(),
@@ -54,7 +54,7 @@ export class CofreService {
     ]);
     if (bc || cc || sc || rc) throw new InternalServerErrorException('No se pudieron comprobar los roles');
     if (!comprador && !comerciante && !staff && !revisor) throw new ForbiddenException('Usuario sin un perfil habilitado');
-    return {authId:user.id,userId:usuario.id,email:user.email,nombre:String(usuario.nombre||''),compradorId:comprador?.id??null,comercianteId:comerciante?.id??null,staff:!!staff,revisor:!!revisor};
+    return {authId:user.id,userId:usuario.id,email:user.email,nombre:String(user.user_metadata?.full_name || user.email.split('@')[0] || ''),compradorId:comprador?.id??null,comercianteId:comerciante?.id??null,staff:!!staff,revisor:!!revisor};
   }
   private profile(identity:CofreIdentity, rol?:RolCofre) {
     const selected = rol ?? (identity.compradorId ? 'comprador' : 'comerciante');

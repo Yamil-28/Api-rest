@@ -27,9 +27,7 @@ export function ValidarRecojoScreen() {
   return <><Header title="Validar retiro" subtitle="Uso exclusivo del personal autorizado" back={back}/><ScreenBody>
    {!staff?<Card><Txt>Tu cuenta no tiene permiso de entrega.</Txt></Card>:<>
     <Card><Txt bold>Escanear QR de recojo</Txt><Txt muted size={11}>El código debe estar vigente y el pago del locker confirmado.</Txt>
-     {!permission?<Txt>Cargando permiso de cámara...</Txt>:!permission.granted?<Button label="Permitir cámara" onPress={()=>{void requestPermission();}}/>:scanning?<View style={styles.camera}><CameraView style={{flex:1}} facing="back" barcodeScannerSettings={{barcodeTypes:['qr']}} onBarcodeScanned={({ data }: { data: string }) => {
-  void validar(data);
-}}/></View>:<Button label="Escanear otro QR" variant="outline" onPress={()=>{setResultado('');setScanning(true);}}/>}
+     {!permission?<Txt>Cargando permiso de cámara...</Txt>:!permission.granted?<Button label="Permitir cámara" onPress={()=>{void requestPermission();}}/>:scanning?<View style={styles.camera}><CameraView style={{flex:1}} facing="back" barcodeScannerSettings={{barcodeTypes:['qr']}} onBarcodeScanned={({data})=>{void validar(data);}}/></View>:<Button label="Escanear otro QR" variant="outline" onPress={()=>{setResultado('');setScanning(true);}}/>}
     </Card>
     <Card><Txt bold>Alternativa de prueba manual</Txt><TextInput style={styles.input} value={texto} onChangeText={setTexto} placeholder="COFRE:V1:..." autoCapitalize="none"/><Button label="Validar código" onPress={()=>{void validar(texto);}}/></Card>
     {resultado?<Card><Txt>{resultado}</Txt></Card>:null}
