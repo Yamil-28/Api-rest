@@ -25,6 +25,13 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## API documentation
+
+With the API running on port `3000`, open Swagger UI at
+http://localhost:3000/docs. The OpenAPI JSON is available at
+http://localhost:3000/swagger.json and is also included in the repository as
+[`swagger.json`](./swagger.json).
+
 ## Project setup
 
 ```bash
